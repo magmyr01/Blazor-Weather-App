@@ -1,0 +1,16 @@
+﻿.scroll-container {
+    display: flex;
+    flex-direction:row;
+    overflow-x: auto; /* Enable horizontal scrolling */
+    max-width: 400px; /* Ensure the container does not exceed the max width */
+    white-space: nowrap; /* Prevent line breaks */
+}
+
+.scroll-item {
+    flex: 0 0 auto; /* Prevent the item from shrinking or growing */
+    width: 175px; /* Set a fixed width for each item */
+    margin-right: 10px; /* Optional: add some space between items */
+    background-color: lightgray; /* Optional: style the items */
+    padding: 10px; /* Optional: add padding to the items */
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+}

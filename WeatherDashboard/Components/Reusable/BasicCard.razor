@@ -1,0 +1,17 @@
+﻿<div class="card m-3" style="width: @CardWidth">
+	<div class="card-header">@CardTitle</div>
+	<div class="card-body">
+		@Body
+	</div>
+</div>
+
+@code {
+	[Parameter]
+	public string? CardTitle { get; set; }
+
+	[Parameter]
+	public RenderFragment? Body { get; set; }
+
+	[Parameter]
+	public string CardWidth { get; set; } = "400px";
+		}

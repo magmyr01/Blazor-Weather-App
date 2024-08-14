@@ -1,0 +1,17 @@
+﻿@page "/"
+
+@inject TransferService TransferService
+@inject CitiesService CitiesService
+
+<PageTitle>Home</PageTitle>
+
+<h1>Welcome to the weather forecasts webpage made with Blazor</h1>
+
+@code
+{
+	protected override void OnInitialized()
+	{
+		base.OnInitialized();
+		TransferService.SelectedCity = CitiesService.FilterCities("Stockholm")[0];
+	}
+}

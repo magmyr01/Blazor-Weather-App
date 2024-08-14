@@ -1,0 +1,106 @@
+﻿@using System.ComponentModel.DataAnnotations
+@rendermode InteractiveServer
+@inject NavigationManager NavigationManager
+@inject CitiesService CitiesClient
+@inject TransferService TransferService
+
+
+<div style="min-width:300px">
+	<nav class="navbar navbar-default">
+		<div class="container">
+			<div style="display:flex;flex-direction:column">
+				<InputText id="citySearch" @bind-Value="@SearchQuery"
+						   placeholder="Search for a city" list="cityList" @oninput="OnInput"
+						   @onkeydown="OnKeyDown" />
+				<datalist id="cityList">
+					@foreach (var city in filteredCities!)
+					{
+						<option value="@city.Locality" />
+					}
+				</datalist>
+
+				@if (showError)
+				{
+					<span class="text-danger mt-2">@errorMessage</span>
+				}
+			</div>
+			<button class="btn btn-outline-success" style="place-self:baseline" @onclick="SubmitSearch">Search</button>
+		</div>
+	</nav>
+</div>
+
+
+@code
+{
+	private bool showError;
+	private string errorMessage = string.Empty;
+	private string searchQuery = string.Empty;
+	private SwedishCitiesModel selectedCity => TransferService.SelectedCity;
+
+	private string SearchQuery
+	{
+		get { return searchQuery; }
+		set
+		{
+			searchQuery = value;
+			filteredCities = CitiesClient.FilterCities(searchQuery);
+		}
+	}
+
+	private List<SwedishCitiesModel>? filteredCities;
+
+	protected override void OnInitialized()
+	{
+		filteredCities = new List<SwedishCitiesModel>();
+		TransferService.SelectedCityChanged += OnDataClassChanged;
+	}
+
+	public void Dispose()
+	{
+		TransferService.SelectedCityChanged -= OnDataClassChanged;
+	}
+
+	public void OnDataClassChanged(object? sender, SwedishCitiesModel value)
+	{
+		InvokeAsync(StateHasChanged);
+	}
+
+	private void SubmitSearch(EventArgs e)
+	{
+		if (searchQuery == string.Empty)
+		{
+			errorMessage = "Field can't be empty";
+			showError = true;
+
+		}
+		else if (filteredCities!.Count == 0)
+		{
+			errorMessage = "Couldn't find the specified city.";
+			showError = true;
+			return;
+		}
+		else
+		{
+			searchQuery = filteredCities[0].Locality;
+			TransferService.SelectedCity = filteredCities[0];
+			NavigationManager.NavigateTo(TransferService.SelectedCity + "/today");
+		}
+	}
+
+	private void OnInput(ChangeEventArgs? e)
+	{
+		if(e is not null && e.Value is not null)
+		{
+			SearchQuery = e?.Value.ToString() ?? "";
+		}
+	}
+	private void OnKeyDown(KeyboardEventArgs e)
+	{
+		showError = false;
+		if (e.Code == "Enter" || e.Code == "NumpadEnter")
+		{
+			SubmitSearch(EventArgs.Empty);
+			
+		}
+	}
+}

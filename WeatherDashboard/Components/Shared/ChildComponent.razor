@@ -1,0 +1,21 @@
+﻿<h3>Hi I'm the childcomponent</h3>
+<p>@Data1</p>
+<p>@Data2</p>
+<p>@InputParameter</p>
+<p>@AdditionalAttributes["myCustomAttribute"]</p>
+
+@code {
+	//Cascading parameters
+	[CascadingParameter(Name = "CascadeParam1")]
+	public string Data1 { get; set; } = "";
+
+	[CascadingParameter(Name = "CascadeParam2")]
+	public string Data2 { get; set; } = "";
+
+	//Parameters
+	[Parameter]
+	public string InputParameter { get; set; } = "Default";
+
+	[Parameter(CaptureUnmatchedValues = true)]
+	public Dictionary<string, object> AdditionalAttributes { get; set; } = new();
+}

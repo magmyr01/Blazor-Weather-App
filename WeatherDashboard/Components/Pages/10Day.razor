@@ -1,0 +1,52 @@
+﻿@page "/{City}/10day"
+
+@attribute [StreamRendering]
+
+@inject TransferService TransferService
+@inject WeatherService WeatherService
+
+
+@if(City is null)
+{
+	<p>Loading...</p>
+}
+else
+{
+	<table class="table">
+		<thead>
+			<tr>
+				<th scope="col"></th>
+				<th scope="col">Temperature max/mix</th>
+				<th scope="col">Wind speed</th>
+				<th scope="col">Relative humidity</th>
+			</tr>
+		</thead>
+		<tbody>
+			@if (DaysSummary != null)
+			{
+				@foreach (var daySummary in DaysSummary)
+				{
+					<tr>
+						<th scope="row"></th>
+						<td>@($"{@daySummary.MaxTemp}/{@daySummary.MinTemp}")</td>
+						<td>@($"{daySummary.WindSpeed} m/s")</td>
+						<td>@($"{daySummary.RelativeHumidity}%")</td>
+					</tr>
+				}
+			}
+		</tbody>
+	</table>
+}
+
+@code {
+	[Parameter]
+	public string? City { get; set; }
+
+	private List<DaySummary>? DaysSummary;
+
+	protected override async Task OnInitializedAsync()
+	{
+		DaysSummary = await WeatherService.Get10DaySummary(TransferService.SelectedCity.Longitude, TransferService.SelectedCity.Latitude);
+		await base.OnInitializedAsync();
+	}
+}
