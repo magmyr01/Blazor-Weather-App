@@ -5,27 +5,34 @@ namespace WeatherDashboard.Services
 	public class WeatherService
 	{
 		private readonly HttpClient httpClient;
+		private TransferService TransferService;
 
-		public WeatherService(HttpClient httpClient)
+		public WeatherService(HttpClient httpClient, TransferService transferService)
 		{
 			this.httpClient = httpClient;
+			TransferService = transferService;
 		}
 
 		public async Task<MyResponseType?> GetDataAsync(double longitude, double latitude)
 		{
-			try
+			if(TransferService.WeatherInfo is null)
 			{
-				var response = await httpClient.GetAsync($"/api/category/pmp3g/version/2/geotype/point/lon/{longitude}/lat/{latitude}/data.json");
+				try
+				{
+					var response = await httpClient.GetAsync($"/api/category/pmp3g/version/2/geotype/point/lon/{longitude}/lat/{latitude}/data.json");
 
-				response.EnsureSuccessStatusCode();
+					response.EnsureSuccessStatusCode();
 
-				return await response.Content.ReadFromJsonAsync<MyResponseType>();
+					TransferService.WeatherInfo = await response.Content.ReadFromJsonAsync<MyResponseType>();
+					return TransferService.WeatherInfo;
+				}
+				catch (HttpRequestException e)
+				{
+					Console.WriteLine(e.Message);
+					return null;
+				}
 			}
-			catch (HttpRequestException e)
-			{
-				Console.WriteLine(e.Message);
-				return null;
-			}
+			return TransferService.WeatherInfo;
 		}
 
 		public static string WeatherCodeToWeatherSymbolConverter(int weatherCode)

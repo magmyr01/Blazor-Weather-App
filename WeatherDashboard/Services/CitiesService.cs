@@ -5,16 +5,31 @@ namespace WeatherDashboard.Services
 {
 	public class CitiesService
 	{
-		public HttpClient HttpClient { get; set; }
-
-
 		Dictionary<string, SwedishCitiesModel> swedishCities;
+		private TransferService TransferService { get; set; }
 
-		public CitiesService(HttpClient httpClient)
+		public CitiesService(TransferService transferService)
 		{
-			HttpClient = httpClient;
 			swedishCities = new Dictionary<string, SwedishCitiesModel>();
+			TransferService = transferService;
 			FetchCityList();
+
+			TransferService.SelectedCityChanged += OnSelectedCityChanged;
+		}
+
+		public List<SwedishCitiesModel> FilterCities(string searchQuery)
+		{
+			return swedishCities.Where(c => c.Key.Contains(searchQuery, StringComparison.OrdinalIgnoreCase)).Take(20).Select(p => p.Value).ToList();
+		}
+
+		public SwedishCitiesModel GetSelectedCity()
+		{
+			return TransferService.SelectedCity;
+		}
+
+		public void UpdateSelectedCity(SwedishCitiesModel newCity)
+		{
+			TransferService.SelectedCity = newCity;
 		}
 
 		private void FetchCityList()
@@ -28,9 +43,11 @@ namespace WeatherDashboard.Services
 			}
 		}
 
-		public List<SwedishCitiesModel> FilterCities(string searchQuery)
+		private void OnSelectedCityChanged(object? sender, SwedishCitiesModel e)
 		{
-			return swedishCities.Where(c => c.Key.Contains(searchQuery, StringComparison.OrdinalIgnoreCase)).Take(20).Select(p => p.Value).ToList();
+			SelectedCityChanged.Invoke(this, e);
 		}
+
+		public event EventHandler<SwedishCitiesModel> SelectedCityChanged = (sender, value) => { };
 	}
 }

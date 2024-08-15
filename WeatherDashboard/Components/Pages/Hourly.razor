@@ -2,8 +2,8 @@
 
 @attribute [StreamRendering]
 
-@inject TransferService TransferService
 @inject WeatherService WeatherService
+@inject CitiesService CitiesService
 
 <PageTitle>Hourly weather in @City</PageTitle>
 
@@ -55,7 +55,7 @@ else
 
 	protected override async Task OnInitializedAsync()
 	{
-		WeatherInfo = await WeatherService.GetDataAsync(TransferService.SelectedCity.Longitude, TransferService.SelectedCity.Latitude);
+		WeatherInfo = await WeatherService.GetDataAsync(CitiesService.GetSelectedCity().Longitude, CitiesService.GetSelectedCity().Latitude);
 		await base.OnInitializedAsync();
 	}
 }

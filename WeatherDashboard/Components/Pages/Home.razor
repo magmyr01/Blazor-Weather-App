@@ -1,6 +1,5 @@
 ﻿@page "/"
 
-@inject TransferService TransferService
 @inject CitiesService CitiesService
 
 <PageTitle>Home</PageTitle>
@@ -12,6 +11,6 @@
 	protected override void OnInitialized()
 	{
 		base.OnInitialized();
-		TransferService.SelectedCity = CitiesService.FilterCities("Stockholm")[0];
+		CitiesService.UpdateSelectedCity(CitiesService.FilterCities("Stockholm")[0]);
 	}
 }

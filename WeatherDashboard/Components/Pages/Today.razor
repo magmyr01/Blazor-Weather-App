@@ -4,7 +4,6 @@
 
 @inject CitiesService CitiesService
 @inject WeatherService WeatherService
-@inject TransferService TransferService
 
 <PageTitle>Weather in @City</PageTitle>
 
@@ -112,7 +111,7 @@ else
 
 	protected override async Task OnInitializedAsync()
 	{
-		WeatherInfo = await WeatherService.GetDataAsync(TransferService.SelectedCity.Longitude, TransferService.SelectedCity.Latitude);
+		WeatherInfo = await WeatherService.GetDataAsync(CitiesService.GetSelectedCity().Longitude, CitiesService.GetSelectedCity().Latitude);
 		await base.OnInitializedAsync();
 	}
 }

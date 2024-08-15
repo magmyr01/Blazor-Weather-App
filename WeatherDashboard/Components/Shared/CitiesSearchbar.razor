@@ -1,17 +1,16 @@
 ﻿@using System.ComponentModel.DataAnnotations
 @rendermode InteractiveServer
 @inject NavigationManager NavigationManager
-@inject CitiesService CitiesClient
-@inject TransferService TransferService
+@inject CitiesService CitiesService
 
 
-<div style="min-width:300px">
+<div style="min-width:350px">
 	<nav class="navbar navbar-default">
 		<div class="container">
 			<div style="display:flex;flex-direction:column">
 				<InputText id="citySearch" @bind-Value="@SearchQuery"
 						   placeholder="Search for a city" list="cityList" @oninput="OnInput"
-						   @onkeydown="OnKeyDown" />
+						   @onkeyup="OnKeyDown" />
 				<datalist id="cityList">
 					@foreach (var city in filteredCities!)
 					{
@@ -35,7 +34,7 @@
 	private bool showError;
 	private string errorMessage = string.Empty;
 	private string searchQuery = string.Empty;
-	private SwedishCitiesModel selectedCity => TransferService.SelectedCity;
+	private SwedishCitiesModel selectedCity => CitiesService.GetSelectedCity();
 
 	private string SearchQuery
 	{
@@ -43,7 +42,7 @@
 		set
 		{
 			searchQuery = value;
-			filteredCities = CitiesClient.FilterCities(searchQuery);
+			filteredCities = CitiesService.FilterCities(searchQuery);
 		}
 	}
 
@@ -51,18 +50,7 @@
 
 	protected override void OnInitialized()
 	{
-		filteredCities = new List<SwedishCitiesModel>();
-		TransferService.SelectedCityChanged += OnDataClassChanged;
-	}
-
-	public void Dispose()
-	{
-		TransferService.SelectedCityChanged -= OnDataClassChanged;
-	}
-
-	public void OnDataClassChanged(object? sender, SwedishCitiesModel value)
-	{
-		InvokeAsync(StateHasChanged);
+		filteredCities = CitiesService.FilterCities("");
 	}
 
 	private void SubmitSearch(EventArgs e)
@@ -75,15 +63,15 @@
 		}
 		else if (filteredCities!.Count == 0)
 		{
-			errorMessage = "Couldn't find the specified city.";
+			errorMessage = "Couldn't find the specified city";
 			showError = true;
 			return;
 		}
 		else
 		{
 			searchQuery = filteredCities[0].Locality;
-			TransferService.SelectedCity = filteredCities[0];
-			NavigationManager.NavigateTo(TransferService.SelectedCity + "/today");
+			CitiesService.UpdateSelectedCity(filteredCities[0]);
+			NavigationManager.NavigateTo(CitiesService.GetSelectedCity().Locality + "/today");
 		}
 	}
 
@@ -94,13 +82,13 @@
 			SearchQuery = e?.Value.ToString() ?? "";
 		}
 	}
+
 	private void OnKeyDown(KeyboardEventArgs e)
 	{
 		showError = false;
 		if (e.Code == "Enter" || e.Code == "NumpadEnter")
 		{
 			SubmitSearch(EventArgs.Empty);
-			
 		}
 	}
 }

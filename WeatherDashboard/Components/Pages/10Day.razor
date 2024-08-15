@@ -2,7 +2,7 @@
 
 @attribute [StreamRendering]
 
-@inject TransferService TransferService
+@inject CitiesService CitiesService
 @inject WeatherService WeatherService
 
 
@@ -46,7 +46,7 @@ else
 
 	protected override async Task OnInitializedAsync()
 	{
-		DaysSummary = await WeatherService.Get10DaySummary(TransferService.SelectedCity.Longitude, TransferService.SelectedCity.Latitude);
+		DaysSummary = await WeatherService.Get10DaySummary(CitiesService.GetSelectedCity().Longitude, CitiesService.GetSelectedCity().Latitude);
 		await base.OnInitializedAsync();
 	}
 }

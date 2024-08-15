@@ -1,6 +1,6 @@
 ﻿@using WeatherDashboard.Components.Shared
 
-@inject TransferService TransferService
+@inject CitiesService CitiesService
 
 
 <div class="d-flex bg-body-tertiary" style="border: 1px solid; align-items:center; height:70px">
@@ -9,16 +9,16 @@
 </div>
 
 @code {
-	private SwedishCitiesModel SelectedCity => TransferService.SelectedCity;
+	private SwedishCitiesModel SelectedCity => CitiesService.GetSelectedCity();
 
 	protected override void OnInitialized()
 	{
-		TransferService.SelectedCityChanged += OnDataClassChanged;
+		CitiesService.SelectedCityChanged += OnDataClassChanged;
 	}
 
 	public void Dispose()
 	{
-		TransferService.SelectedCityChanged -= OnDataClassChanged;
+		CitiesService.SelectedCityChanged -= OnDataClassChanged;
 	}
 
 	public void OnDataClassChanged(object? sender, SwedishCitiesModel value)

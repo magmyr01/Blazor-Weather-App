@@ -5,6 +5,8 @@ namespace WeatherDashboard.Services;
 public class TransferService
 {
 	private SwedishCitiesModel? selectedCity;
+	private MyResponseType? weatherInfo;
+
 	public SwedishCitiesModel SelectedCity 
 	{
 		get
@@ -24,8 +26,21 @@ public class TransferService
 		}
 		set
 		{
-			selectedCity = value;
-			SelectedCityChanged.Invoke(this, value);
+			if(selectedCity != value)
+			{
+				selectedCity = value;
+				SelectedCityChanged.Invoke(this, value);
+				weatherInfo = null;
+			}
+		}
+	}
+
+	public MyResponseType? WeatherInfo
+	{
+		get => weatherInfo; 
+		set
+		{
+			weatherInfo = value;
 		}
 	}
 
