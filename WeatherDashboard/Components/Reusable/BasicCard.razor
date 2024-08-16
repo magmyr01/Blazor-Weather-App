@@ -1,9 +1,17 @@
-﻿<div class="card m-3" style="width: @CardWidth">
-	<div class="card-header">@CardTitle</div>
-	<div class="card-body">
-		@Body
-	</div>
-</div>
+﻿<MudCard Outlined="true" Class="m-5">
+	<MudCardHeader>
+		<CardHeaderContent>
+			<MudText Typo="Typo.h6">
+				@CardTitle
+			</MudText>
+		</CardHeaderContent>
+	</MudCardHeader>
+	<MudCardContent>
+		<MudText Typo="Typo.body2">
+			@Body
+		</MudText>
+	</MudCardContent>
+</MudCard>
 
 @code {
 	[Parameter]

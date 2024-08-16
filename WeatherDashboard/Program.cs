@@ -1,3 +1,4 @@
+using MudBlazor.Services;
 using WeatherDashboard.Components;
 using WeatherDashboard.Services;
 
@@ -5,8 +6,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
-    .AddInteractiveServerComponents()
-    .AddInteractiveWebAssemblyComponents();
+    .AddInteractiveServerComponents();
+
+builder.Services.AddMudServices();
 
 //var weatherPageApiUrl = builder.Configuration["WeatherPageApiUrl"] ?? throw new Exception("Url is not set");
 
@@ -39,7 +41,6 @@ app.UseAntiforgery();
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode()
-    .AddInteractiveWebAssemblyRenderMode()
     .AddAdditionalAssemblies(typeof(WeatherDashboard.Client._Imports).Assembly);
 
 app.Run();

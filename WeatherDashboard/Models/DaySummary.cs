@@ -6,5 +6,6 @@
 		public double MinTemp { get; set; }
 		public double WindSpeed { get; set; }
 		public int RelativeHumidity { get; set; }
+		public DateTime Date { get; set; }
 	}
 }

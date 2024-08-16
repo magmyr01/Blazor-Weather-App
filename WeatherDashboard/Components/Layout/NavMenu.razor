@@ -1,58 +1,36 @@
 ﻿@inject CitiesService CitiesService
 @inject NavigationManager NavigationManager
 
-<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">WeatherDashboard</a>
-    </div>
-</div>
-
-<input type="checkbox" title="Navigation menu" class="navbar-toggler" />
-
-<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
-    <nav class="flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="@($"/{CitiesService.GetSelectedCity().Locality}/today")" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Today in @city.Locality
-            </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="@($"/{CitiesService.GetSelectedCity().Locality}/hourly")" Match="NavLinkMatch.All">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Hourly in @city.Locality
-            </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="@($"/{CitiesService.GetSelectedCity().Locality}/10Day")" Match="NavLinkMatch.All">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> 10-day in @city.Locality
-            </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter" Match="NavLinkMatch.All">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Counter
-            </NavLink>
-        </div>
-    </nav>
-</div>
+<MudPaper Class="py-3" Elevation="2">
+	<MudNavMenu>
+		<MudNavLink Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Dashboard" IconColor="Color.Inherit" Href="@($"/{CitiesService.GetSelectedCity().Locality}/today")">
+			Today in @city.Locality
+		</MudNavLink>
+		<MudNavLink Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.LocalLibrary" IconColor="Color.Inherit" Href="@($"/{CitiesService.GetSelectedCity().Locality}/hourly")">
+			Hourly in @city.Locality
+		</MudNavLink>
+		<MudNavLink Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.People" IconColor="Color.Inherit" Href="@($"/{CitiesService.GetSelectedCity().Locality}/10Day")">
+			10-day in @city.Locality
+		</MudNavLink>
+	</MudNavMenu>
+</MudPaper>
 
 @code
 {
-    public SwedishCitiesModel city => CitiesService.GetSelectedCity();
+	public SwedishCitiesModel city => CitiesService.GetSelectedCity();
 
-    protected override void OnInitialized()
-    {
-        CitiesService.SelectedCityChanged += OnDataClassChanged;
-    }
+	protected override void OnInitialized()
+	{
+		CitiesService.SelectedCityChanged += OnDataClassChanged;
+	}
 
-    public void Dispose()
-    {
-        CitiesService.SelectedCityChanged -= OnDataClassChanged;
-    }
+	public void Dispose()
+	{
+		CitiesService.SelectedCityChanged -= OnDataClassChanged;
+	}
 
-    public void OnDataClassChanged(object? sender, SwedishCitiesModel value)
-    {
-        InvokeAsync(StateHasChanged);
-    }
+	public void OnDataClassChanged(object? sender, SwedishCitiesModel value)
+	{
+		InvokeAsync(StateHasChanged);
+	}
 }

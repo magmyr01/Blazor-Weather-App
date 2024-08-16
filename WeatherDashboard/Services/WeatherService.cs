@@ -1,4 +1,5 @@
-﻿using WeatherDashboard.Models;
+﻿using System.Net.Mime;
+using WeatherDashboard.Models;
 
 namespace WeatherDashboard.Services
 {
@@ -55,12 +56,12 @@ namespace WeatherDashboard.Services
 					return "/Icons/WeatherIcons/cloud-hail.svg";
 				case 9:
 				case 19:
-					return "/Icons/WeatherIcons/could-rain.svg";
+					return "/Icons/WeatherIcons/cloud-rain.svg";
 				case 10:
 				case 20:
 					return "/Icons/WeatherIcons/cloud-rain-heavy.svg";
 				case 11:
-					return "/Icons/WeatherIcons/could-lightning-rain.svg";
+					return "/Icons/WeatherIcons/cloud-lightning-rain.svg";
 				case 12:
 				case 13:
 				case 22:
@@ -114,6 +115,7 @@ namespace WeatherDashboard.Services
 
 				list.Add(new DaySummary()
 				{
+					Date = pointerDate,
 					MaxTemp = MaxTemp,
 					MinTemp = MinTemp,
 					WindSpeed = WindSpeed,
@@ -122,6 +124,33 @@ namespace WeatherDashboard.Services
 			}
 
 			return list;
+		}
+
+		public Tuple<double, double> GetMaxMin2Day()
+		{
+			double min = double.MaxValue; 
+			double max = double.MinValue;
+
+			DateTime today = DateTime.Now.Date;
+			int iterator = 0;
+
+			while (TransferService.WeatherInfo.TimeSeries[iterator].ValidTime.Date == today)
+			{
+				double temp = TransferService.WeatherInfo.TimeSeries[iterator].ParametersDictionary["t"].Values[0];
+
+				if (temp > max)
+				{
+					max = temp;
+				}
+				if(temp < min)
+				{
+					min = temp;
+				}
+
+				iterator++;
+			}
+
+			return Tuple.Create(min, max);
 		}
 	}
 }

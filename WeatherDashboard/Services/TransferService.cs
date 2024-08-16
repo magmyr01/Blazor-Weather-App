@@ -29,8 +29,8 @@ public class TransferService
 			if(selectedCity != value)
 			{
 				selectedCity = value;
-				SelectedCityChanged.Invoke(this, value);
 				weatherInfo = null;
+				SelectedCityChanged.Invoke(this, value);
 			}
 		}
 	}

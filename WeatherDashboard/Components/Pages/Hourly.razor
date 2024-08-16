@@ -18,27 +18,27 @@ else
 		@foreach(var entry in WeatherInfo.TimeSeries.Take(10))
 		{
 			<div>
-				<BasicCard CardTitle="@($"Weather at {entry.ValidTime.ToString("HH:00tt")}")" CardWidth="90%">
+				<BasicCard CardTitle="@($"Weather at {entry.ValidTime.ToString("HH:00tt")}")" CardWidth="60%">
 					<Body>
-						<div class="card-body" style="display:flex;flex-direction:row">
-							<div style="display:flex;flex-direction:row; align-items:center; width:100%">
-								<div class="col-md-2 card-subtitle">
-									<img src="@WeatherService.WeatherCodeToWeatherSymbolConverter((int)entry.ParametersDictionary["Wsymb2"].Values[0])" width="40" height="40" fill="black" />
-								</div>
-								<div class="card-body m-2">
-									@* <label class="text-black fs-3">"@($" {entry.Parameters.Find(x => x.Name == "t").Values[0].ToString()}°")"</label> *@
-									<label class="text-black fs-3">"@($" {entry.ParametersDictionary["t"].Values[0].ToString()}°")"</label>
-								</div>
-							</div>
-							<div class="col card-subtitle mb-2 text-body-secondary">
-								<div class="card" style="width: 18rem;">
-									<ul class="list-group list-group-flush">
-										<li class="list-group-item">Wind speed: "@($" {entry.ParametersDictionary["ws"].Values[0].ToString()}")"m/s</li>
-										<li class="list-group-item">Humidity: "@($" {entry.ParametersDictionary["r"].Values[0].ToString()}")"%</li>
-									</ul>
-								</div>
-							</div>
-						</div>
+						<MudStack Row="true" Justify="Justify.SpaceBetween">
+							<MudStack Row="true" AlignItems="AlignItems.Center">
+								<img src="@WeatherService.WeatherCodeToWeatherSymbolConverter((int)WeatherInfo.TimeSeries[0].ParametersDictionary["Wsymb2"].Values[0])" width="40" height="40" fill="white" />
+								<MudText class="fs-3">@entry.ParametersDictionary["t"].Values[0].ToString()°</MudText>
+							</MudStack>
+							<MudPaper Class="pa-4">
+								<MudStack Row="false">
+									<MudStack Row="true">
+										<MudText>Wind speed: </MudText>
+										<MudText>@entry.ParametersDictionary["ws"].Values[0].ToString() m/s</MudText>
+									</MudStack>
+									<MudStack Row="true">
+										<MudText>Humidity: </MudText>
+										<MudText>@entry.ParametersDictionary["r"].Values[0].ToString()%</MudText>
+									</MudStack>
+								</MudStack>
+							</MudPaper>
+						</MudStack>
+						
 					</Body>
 				</BasicCard>
 			</div>

@@ -9,6 +9,7 @@
   <ItemGroup>
 	<PackageReference Include="Blazor.Geolocation" Version="8.0.0" />
 	<PackageReference Include="CsvHelper" Version="33.0.1" />
+	<PackageReference Include="MudBlazor" Version="7.6.0" />
 	<ProjectReference Include="..\WeatherDashboard.Client\WeatherDashboard.Client.csproj" />
 	<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.7" />
   </ItemGroup>

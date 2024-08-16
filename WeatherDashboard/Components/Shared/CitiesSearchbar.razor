@@ -4,91 +4,57 @@
 @inject CitiesService CitiesService
 
 
-<div style="min-width:350px">
-	<nav class="navbar navbar-default">
-		<div class="container">
-			<div style="display:flex;flex-direction:column">
-				<InputText id="citySearch" @bind-Value="@SearchQuery"
-						   placeholder="Search for a city" list="cityList" @oninput="OnInput"
-						   @onkeyup="OnKeyDown" />
-				<datalist id="cityList">
-					@foreach (var city in filteredCities!)
-					{
-						<option value="@city.Locality" />
-					}
-				</datalist>
+<MudGrid Style="width:600px">
+	<MudItem xs="8" sm="8" md="8">
+		<MudAutocomplete T="SwedishCitiesModel" Label="City" @bind-Value=@searchQuery SearchFunc="@CitySearch"
+						 ToStringFunc="@(e => e==null?null : $"{e.Locality}")" CoerceValue="false"/>
+	</MudItem>
+	<MudItem>
+		<button class="btn btn-outline-success" style="place-self:baseline" @onclick="SubmitSearch">Search</button>
+	</MudItem>
 
-				@if (showError)
-				{
-					<span class="text-danger mt-2">@errorMessage</span>
-				}
-			</div>
-			<button class="btn btn-outline-success" style="place-self:baseline" @onclick="SubmitSearch">Search</button>
-		</div>
-	</nav>
-</div>
+</MudGrid>
 
 
 @code
 {
 	private bool showError;
 	private string errorMessage = string.Empty;
-	private string searchQuery = string.Empty;
+	private SwedishCitiesModel? searchQuery;
 	private SwedishCitiesModel selectedCity => CitiesService.GetSelectedCity();
 
-	private string SearchQuery
+	private SwedishCitiesModel? SearchQuery
 	{
 		get { return searchQuery; }
 		set
 		{
 			searchQuery = value;
-			filteredCities = CitiesService.FilterCities(searchQuery);
 		}
-	}
-
-	private List<SwedishCitiesModel>? filteredCities;
-
-	protected override void OnInitialized()
-	{
-		filteredCities = CitiesService.FilterCities("");
 	}
 
 	private void SubmitSearch(EventArgs e)
 	{
-		if (searchQuery == string.Empty)
+		if (searchQuery is null)
 		{
 			errorMessage = "Field can't be empty";
 			showError = true;
 
 		}
-		else if (filteredCities!.Count == 0)
-		{
-			errorMessage = "Couldn't find the specified city";
-			showError = true;
-			return;
-		}
+		// else if (filteredCities!.Count == 0)
+		// {
+		// 	errorMessage = "Couldn't find the specified city";
+		// 	showError = true;
+		// 	return;
+		// }
 		else
 		{
-			searchQuery = filteredCities[0].Locality;
-			CitiesService.UpdateSelectedCity(filteredCities[0]);
+			CitiesService.UpdateSelectedCity(searchQuery);
 			NavigationManager.NavigateTo(CitiesService.GetSelectedCity().Locality + "/today");
 		}
 	}
 
-	private void OnInput(ChangeEventArgs? e)
+	private async Task<IEnumerable<SwedishCitiesModel>> CitySearch(string value, CancellationToken token)
 	{
-		if(e is not null && e.Value is not null)
-		{
-			SearchQuery = e?.Value.ToString() ?? "";
-		}
-	}
-
-	private void OnKeyDown(KeyboardEventArgs e)
-	{
-		showError = false;
-		if (e.Code == "Enter" || e.Code == "NumpadEnter")
-		{
-			SubmitSearch(EventArgs.Empty);
-		}
+		return (IEnumerable<SwedishCitiesModel>)CitiesService.FilterCities(value);
 	}
 }

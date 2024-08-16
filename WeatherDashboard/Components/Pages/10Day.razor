@@ -6,36 +6,20 @@
 @inject WeatherService WeatherService
 
 
-@if(City is null)
+@if (City is null)
 {
 	<p>Loading...</p>
 }
 else
 {
-	<table class="table">
-		<thead>
-			<tr>
-				<th scope="col"></th>
-				<th scope="col">Temperature max/mix</th>
-				<th scope="col">Wind speed</th>
-				<th scope="col">Relative humidity</th>
-			</tr>
-		</thead>
-		<tbody>
-			@if (DaysSummary != null)
-			{
-				@foreach (var daySummary in DaysSummary)
-				{
-					<tr>
-						<th scope="row"></th>
-						<td>@($"{@daySummary.MaxTemp}/{@daySummary.MinTemp}")</td>
-						<td>@($"{daySummary.WindSpeed} m/s")</td>
-						<td>@($"{daySummary.RelativeHumidity}%")</td>
-					</tr>
-				}
-			}
-		</tbody>
-	</table>
+	<MudDataGrid Items="@DaysSummary" Filterable="false" SortMode="SortMode.None" Groupable="false">
+		<Columns>
+			<PropertyColumn Property="@(x => x.Date.ToString("dd/MM"))" />
+			<PropertyColumn Property="@(x => $"{x.MinTemp}C/{x.MaxTemp}C")" />
+			<PropertyColumn Property="@(x => $"{x.WindSpeed} m/s")" />
+			<PropertyColumn Property="@(x => $"{x.RelativeHumidity}%")" />
+		</Columns>
+	</MudDataGrid>
 }
 
 @code {
